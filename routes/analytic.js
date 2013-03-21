@@ -2,7 +2,7 @@
 module.exports = function (app) {
 
     var mongoose = require('mongoose')
-    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode' };
+    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode', db: 'heroku_app13755504' };
     var opSchema = new mongoose.Schema({
         id: String,
         // data operazione

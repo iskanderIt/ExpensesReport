@@ -2,7 +2,7 @@
 module.exports = function (app) {
 
     var mongoose = require('mongoose')
-    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode' };
+    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode', db: 'heroku_app13755504' };
     var opSchema = new mongoose.Schema({
         id: String,
         // data operazione
@@ -18,7 +18,7 @@ module.exports = function (app) {
     //var port = 27017;
     var port = 37977;
 
-    var Operation = mongoose.createConnection('localhost', 'BilancioNode', port, opts).model("operation", opSchema);
+    var Operation = mongoose.createConnection('ds037977.mongolab.com', 'BilancioNode', port, opts).model("operation", opSchema);
 
     app.post('/operation/save', function (req, res) {
 
