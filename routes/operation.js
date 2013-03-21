@@ -2,7 +2,7 @@
 module.exports = function (app) {
 
     var mongoose = require('mongoose')
-    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: '', pass: '' };
+    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode' };
     var opSchema = new mongoose.Schema({
         id: String,
         // data operazione
@@ -15,7 +15,10 @@ module.exports = function (app) {
         categories: Array,
     });
 
-    var Operation = mongoose.createConnection('localhost', 'BilancioNode', 27017, opts).model("operation", opSchema);
+    //var port = 27017;
+    var port = 37977;
+
+    var Operation = mongoose.createConnection('localhost', 'BilancioNode', port, opts).model("operation", opSchema);
 
     app.post('/operation/save', function (req, res) {
 

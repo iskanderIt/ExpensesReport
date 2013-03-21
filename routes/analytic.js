@@ -2,7 +2,7 @@
 module.exports = function (app) {
 
     var mongoose = require('mongoose')
-    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: '', pass: '' };
+    var opts = { server: { poolSize: 1, auto_reconnect: false, }, user: 'bilancionode', pass: 'bilancionode' };
     var opSchema = new mongoose.Schema({
         id: String,
         // data operazione
@@ -14,7 +14,10 @@ module.exports = function (app) {
         amountIn: Number,
         categories: Array,
     });
-    var operations = mongoose.createConnection('localhost', 'BilancioNode', 27017, opts).model("operation", opSchema);
+    
+    var port = 37977;
+
+    var operations = mongoose.createConnection('localhost', 'BilancioNode', port, opts).model("operation", opSchema);
 
     var queryModel = {
         date: new Date(),
@@ -32,6 +35,8 @@ module.exports = function (app) {
     });
 
     app.get('/analytic/query', function (req, res) {
+        res.json(process.env);
+        return;
         res.render('analytic/query', { model: queryModel });
     })
 
