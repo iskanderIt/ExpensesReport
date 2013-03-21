@@ -132,7 +132,7 @@ module.exports = function (app) {
         //res.json(opt);
         //return;
 
-        operations.aggregate(opt, function (err, data) {
+        Operation.aggregate(opt, function (err, data) {
 
             //res.json([startDate, endDate, offset]);
             //res.json([project, match, group]);
