@@ -1,0 +1,30 @@
+HTML API - BilancioMobile
+
+// GET
+<appUrl>/operation/list
+
+// GET
+<appUrl>/operation/get/id
+
+// POST
+<appUrl>/operation/save/ + params
+
+
+// POST
+<appUrl>/analytic/query/ + params
+//categories=[]
+//startDate ISODate
+//offset=x[d|m|y]
+//granularity=d|m|y
+
+
+// POST
+<appUrl>/analytic/trend/ + params
+//startDate
+//offset=x[d|m|y]
+//categories=[]
+//granularity=d|m|y
+//groupBy=
+
+// POST
+<appUrl>/analytic/trend/ + params

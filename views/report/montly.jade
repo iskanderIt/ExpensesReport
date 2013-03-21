@@ -1,0 +1,161 @@
+﻿
+section(id='query-form')
+	!= "<script type='text/javascript'>"
+	!= "var years = [];"
+	- each year in years
+		!= "years.push(" + year + ");"
+	!= "</script>"
+
+	fieldset
+		div(class="btn-group", id="tab-year")
+			each year in years
+				button(class="item btn")= year
+	p
+	each year in years
+		div(class="panel hidden", id="panel-"+year,)
+			div(class="tooltip hidden", id="tooltip-"+year)
+			div(class="graph", id="graph-"+year)
+			div(class="legend", id="legend-"+year)
+			table(class="table table-striped table-bordered table-detail", id="table-"+year)
+				tr(class="row", id="row-"+year+"-0")
+					td(class="cell") #
+					td(class="cell") Item
+					td(class="cell") Delta
+					td(class="cell") In
+					td(class="cell") Out
+
+
+	script(type='text/javascript')
+
+		$(function(){
+			var plots = [];
+
+			if (!years)
+				return;
+
+			$.each(years, function (i, y) {
+
+				var params = {
+					model : {
+						date : y + "-01-01",
+						offset : {
+							amount : 1,
+							unit : "y"
+						},
+						categories : {},
+						granularity : "m",
+					}
+				};
+
+				$.post('/analytic/query',
+					params,
+					function (data, textStatus, jqXHR) {
+
+					var plot = {
+						instance : null,
+						id : "graph-" + y,
+						tooltip : "tooltip-" + y,
+						legend : "legend-" + y,
+						table: "table-" + y,
+						rowTemplate : "row-" + y + "-0",
+						selected : null,
+						series : {},
+						getSeries : function (){
+							var ret = [];
+							for(p in this.series) 
+								ret.push(this.series[p]);
+							return ret;
+						},
+						addSet : function (key, dataset) {
+							if (this.series[key] == null)
+								this.series[key] = [];
+							this.series[key] = dataset;
+						},
+
+						getSet : function (key) {
+							return this.series[key];
+						},
+
+						setting : {
+							series : {
+								bars : {
+									show : true,
+									barWidth : 0.90,
+									fill : true,
+								}
+							},
+							colors : [ "#13d02c", "#ff6a00","#ffd800"],
+							legend : {
+								show : true,
+								container : $("#legend-" + y),
+							},
+							grid : {
+								show : true,
+								aboveData : true,
+								clickable : true,
+								hoverable : false,
+								borderColor : "rgb(200,200,200)",
+								labelMargin : 35,
+								margin:30,
+							},
+							xaxis: { mode: "categories", tickLength: 0 }
+						}
+					};
+
+					plot.addSet("ingoin", {
+						label : "Ingoing",
+						data: $.map(data, function (item,index){ return ([[item["_id"]["m"], item["amountIn"], 0]]);})
+					});
+					plot.addSet("outgoin", {
+						label : "Outgoing",
+						data: $.map(data, function (item,index){ return ([[item["_id"]["m"], -item["amountOut"], 0]]);})
+					});
+					plot.addSet("delta", {
+						label : "Delta",
+						data: $.map(data, function (item,index){ return ([[item["_id"]["m"], item["amountIn"] - item["amountOut"], 0]]);})
+					});
+
+					plot.instance = $.plot($("#" + plot.id), plot.getSeries(), plot.setting);
+
+					$.each(plot.getSet("delta").data, function (i, e) {
+						var $template = $("#" + plot.rowTemplate).clone();
+						var $children = $template.children();
+						// #
+						$($children[0]).html(i);
+						// Item
+						$($children[1]).html(getMonthLabel(--plot.getSet("delta").data[i][0],3));
+						// Delta
+						$($children[2]).html(plot.getSet("delta").data[i][1].toFixed(2));
+						// In
+						$($children[3]).html(plot.getSet("ingoin").data[i][1].toFixed(2));
+						// Out
+						$($children[4]).html(plot.getSet("outgoin").data[i][1].toFixed(2));
+
+						$("#"+plot.table).append($template);
+					});
+
+					$("#" + plot.id).bind("plotclick", function (event, pos, item) {
+
+						if (item) {
+							plot.instance.unhighlight();
+							plot.instance.highlight(item.series, item.datapoint);
+							$("#" + plot.tooltip).removeClass("hidden")
+							.css("top", (pos.pageY - 10).toFixed(2) + "px")
+							.css("left", (pos.pageX + 10).toFixed(2) + "px")
+							.html($("<strong></strong>").html(item.datapoint[1].toFixed(2) + "€<br/>dettaglio"));
+						} else {
+							$("#" + plot.tooltip).addClass("hidden");
+						}
+					});
+
+					plots.push(plot);
+				},
+					"json");
+				});
+			});
+
+			$(".item").click(function () {
+				var val = $(this).text();
+				$(".panel").css("display", "none");
+				$("#panel-" + val).css("display", "block");
+			});

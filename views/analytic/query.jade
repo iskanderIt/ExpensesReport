@@ -1,0 +1,76 @@
+
+section(id='query-form')
+	form(method="post", action="query", id="query")
+		fieldset
+			legend Ricerca
+			ol
+				li(class="")
+					label(for='model.date') Data Inizio:
+					input(type="date",id='date', name='model.date')
+				li(class="")
+					fieldset
+						legend Periodo
+						ol
+							li(class="")
+								label(for='model.offset.amount') Amount:
+								input(type="text", id='offset-amount', name='model.offset.amount')
+							li(class="")
+								label(for='model.offset.unit') Unit:
+								select(id='offset-unit', name='model.offset.unit')
+									option(value="d") Day
+									option(value="m") Month
+									option(value="y") Year
+				li(class="")
+					input(type="hidden", id="categories", name="model.categories", value="")
+					input(type="hidden", id="granularity", name="model.granularity", value="")
+
+				input(type="submit", value="Esegui")
+	div(class="result", id="query-result")
+		div(class="graph", id="graph1")
+			strong Grafico
+
+	script(type='text/javascript')
+		$("#query").submit(function(){
+
+				var params = {
+					model : {
+						date : $("#date").val(),
+						offset : {
+							amount : $("#offset-amount").val(),
+							unit : $("#offset-unit").val()
+						},
+						categories : ['Cibo', 'Svago'],
+						granularity : $("#granularity").val(),
+					}
+				};
+
+		$.post('query', params, function(data, textStatus, jqXHR){
+				
+				var d = [];
+
+				$.each(data, function(i,e){
+					var lbl ="";
+
+					for(p in e["_id"])
+						lbl += e["_id"][p]+" ";
+
+					d.push({label:lbl.trim(), data: e["amountOut"]})
+				});
+
+				$.plot($("#graph1"), d, 
+				{
+					series: {
+						pie: { 
+							show: true
+						}
+					},
+				legend: {
+					show: false
+				}
+				});
+
+			}, "json");
+
+			
+		return false;
+		});

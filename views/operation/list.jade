@@ -1,0 +1,20 @@
+section(class="main-content")
+	h1= title
+
+table(class="table table-striped table-bordered")
+	tr(class="row")
+		td(class="cell") #
+		td(class="cell") Description
+		td(class="cell") Date
+		td(class="cell") Date Operation
+		td(class="cell") In
+		td(class="cell") Out
+	each op in ops
+		tr(class="row")
+			td(class="cell")
+				a(href="/operation/get/"+op._id)=op._id
+			td(class="cell")=op.description
+			td(class="cell")=op.date.toLocaleDateString()
+			td(class="cell")=op.dateTransition.toLocaleDateString()
+			td(class="cell")=op.amountIn
+			td(class="cell")=op.amountOut

@@ -1,0 +1,20 @@
+{
+  "name": "BilancioNode",
+  "version": "0.1.0",
+  "main": "./web.js",
+  "dependencies" : {
+    "socket.io": "latest",
+    "everyauth": "latest",
+    "nconf": "latest",
+    "express": "latest",
+    "jade": "latest",
+    "less": "latest",
+    "connect": "latest",
+    "recaptcha": "latest"
+  },
+  "noAnalyze": true,
+  "license": "Apache",
+  "engines": {
+    "node": ">=0.6.14"
+  }
+}

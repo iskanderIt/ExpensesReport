@@ -1,0 +1,41 @@
+
+form(method="post", id="editor")
+	fieldset
+		label
+		| ID:
+		input(type="text", name="_id", value=op._id, readonly="readonly")
+		label
+		| Data:
+		input(type="date", name="date", value=op.date.toISOString().substr(0,10))
+		label
+		| Data Contabile:
+		input(type="date", name="dateTransition", value=op.dateTransition.toISOString().substr(0,10))
+		label
+		| Descrizione:
+		input(type="textbox", name="description", value=op.description)
+		label
+		| AmountIn:
+		input(type="textbox", name="amountIn", value=op.amountIn)
+		label
+		| AmountOut:
+		input(type="textbox", name="amountOut", value=op.amountOut)
+
+		input(type="hidden", name="categories[]", value="test")
+		input(type="hidden", name="type", value=op.type)
+		p
+			input(type="button", class="button", value="save")
+			input(type="button", class="button", value="delete")
+
+		script(type="text/javascript")
+			$(function(){
+				$(".button").click(function(){
+					var action = '/operation/'+$(this).val();
+
+					$.post(
+						action,
+						$("#editor").serialize(),
+						function(data, textStatus, jqXHR) {
+							//alert($("#editor").serialize());
+						});
+				});
+			});

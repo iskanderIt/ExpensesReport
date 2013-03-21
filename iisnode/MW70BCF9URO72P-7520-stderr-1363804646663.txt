@@ -1,0 +1,20 @@
+path.existsSync is now called `fs.existsSync`.
+TypeError: C:\Data\Personal\Work\WebMatrix-folder\BilancioNode/views/operation/list.jade:14
+    12| 		tr(class="row")
+    13| 			td(class="cell")=op._id
+  > 14| 			td(class="cell")=op.description
+    15| 			td(class="cell")=op.date.toLocalDateString()
+    16| 			td(class="cell")=op.dateTransition
+    17| 			td(class="cell")=op.amountIn
+
+Object Thu Aug 30 2012 00:00:00 GMT+0200 (W. Europe Daylight Time) has no method 'toLocalDateString'
+    at eval (eval at <anonymous> (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\jade\lib\jade.js:160:8))
+    at eval (eval at <anonymous> (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\jade\lib\jade.js:160:8))
+    at Object.exports.compile (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\jade\lib\jade.js:165:12)
+    at ServerResponse.res._render (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\view.js:425:21)
+    at ServerResponse.res.render (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\view.js:318:17)
+    at ServerResponse.module.exports.res.render (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\middleware\locals.js:18:12)
+    at Promise.module.exports (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\routes\operation.js:95:17)
+    at Promise.addBack (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\mongoose\lib\promise.js:133:8)
+    at Promise.EventEmitter.emit (events.js:88:17)
+    at Promise.emit (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\mongoose\lib\promise.js:66:38)
