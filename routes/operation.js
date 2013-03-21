@@ -18,7 +18,10 @@ module.exports = function (app) {
     //var port = 27017;
     var port = 37977;
 
-    var Operation = mongoose.createConnection('ds037977.mongolab.com', 'BilancioNode', port, opts).model("operation", opSchema);
+    var uri = "mongodb://bilancionode:bilancionode@ds037977.mongolab.com:37977/heroku_app13755504";
+    var Operation = mongoose.connect(uri).model("operation", opSchema);
+
+    //var Operation = mongoose.createConnection('ds037977.mongolab.com', 'BilancioNode', port, opts).model("operation", opSchema);
 
     app.post('/operation/save', function (req, res) {
 
