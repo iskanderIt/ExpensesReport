@@ -15,10 +15,10 @@ module.exports = function (app) {
         categories: Array,
     });
 
-    var uri = "mongodb://bilancionode:bilancionode@ds037977.mongolab.com:37977/heroku_app13755504";
+    var uri = "mongodb://localhost:27017/BilancioNode";
 
-    if(process.env["USERNAME"] == "alessandro.scipioni")
-        uri = "mongodb://localhost:27017/BilancioNode";
+    if (process.env["MONGOLAB_URI"])
+        uri = process.env["MONGOLAB_URI"];
 
     var Operation = mongoose.createConnection(uri).model("operation", opSchema);
 
