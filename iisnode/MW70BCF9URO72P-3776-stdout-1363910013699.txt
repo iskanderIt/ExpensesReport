@@ -1,0 +1,5 @@
+info: socket.io started
+Express server listening on port NaN in development mode
+gIndex: 3 - group by $categories
+gIndex: 3 - group by $categories
+gIndex: 3 - group by $categories

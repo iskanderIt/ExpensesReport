@@ -85,3 +85,8 @@ db.operations.find().forEach(function (x) {
 	x.dateTransition = new Date(t[2], Number(t[1]) - 1, t[0],0,0,0,0);
 	db.operations.save(x);
 })
+db.operations.find().forEach(function (x) {
+    /*string to date, month is 0-based in JS*/
+    x.id = null;
+    db.operations.save(x);
+})

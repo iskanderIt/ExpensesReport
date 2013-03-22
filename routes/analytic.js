@@ -14,12 +14,12 @@ module.exports = function (app) {
         amountIn: Number,
         categories: Array,
     });
-    
-    var port = 37977;
-
-    //var operations = mongoose.createConnection('localhost', 'BilancioNode', port, opts).model("operation", opSchema);
 
     var uri = "mongodb://bilancionode:bilancionode@ds037977.mongolab.com:37977/heroku_app13755504";
+
+    if (process.env["USERNAME"] == "alessandro.scipioni")
+        uri = "mongodb://localhost:27017/BilancioNode";
+
     var Operation = mongoose.createConnection(uri).model("operation", opSchema);
 
     var queryModel = {
