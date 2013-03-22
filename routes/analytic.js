@@ -38,8 +38,6 @@ module.exports = function (app) {
     });
 
     app.get('/analytic/query', function (req, res) {
-        res.json(process.env);
-        return;
         res.render('analytic/query', { model: queryModel });
     })
 
