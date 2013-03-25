@@ -26,7 +26,9 @@ module.exports = function (app) {
 
         var tmp = req.body;
         tmp.date = new Date(tmp.date);
+        tmp.date.setHours(12, 30, 0, 0);
         tmp.dateTransition = new Date(tmp.dateTransition);
+        tmp.dateTransition.setHours(12, 30, 0, 0);
         var obj = {};
 
         var id = tmp._id;
@@ -75,7 +77,6 @@ module.exports = function (app) {
     });
 
     app.get('/operation/get/:idp?', function (req, res) {
-
         var id = req.params.idp;
 
         Operation.findById(id, function (err, data) {
@@ -97,7 +98,6 @@ module.exports = function (app) {
     app.get('/operation/list', function (req, res) {
 
         Operation.find(true, function (err, data) {
-            //res.json(data);
             res.render('operation/list', { title: 'List', ops: data });
         });
     });

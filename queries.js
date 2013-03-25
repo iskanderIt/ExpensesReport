@@ -79,14 +79,13 @@ db.operations.find().forEach(function (x) {
 })
 db.operations.find().forEach(function (x) {
 	/*string to date, month is 0-based in JS*/
-	var d = x.date.split("/");
+    var d = x.date.split("/");
 	var t = x.dateTransition.split("/");
-	x.date = new Date(d[2], Number(d[1]) - 1, d[0],0,0,0,0);
-	x.dateTransition = new Date(t[2], Number(t[1]) - 1, t[0],0,0,0,0);
+	x.date = new Date(Number(d[2]), Number(d[1]) - 1, Number(d[0]),12,0,0,0);
+	x.dateTransition = new Date(Number(t[2]), Number(t[1]) - 1, Number(t[0]),13,0,0,0);
 	db.operations.save(x);
 })
 db.operations.find().forEach(function (x) {
-    /*string to date, month is 0-based in JS*/
     x.id = null;
     db.operations.save(x);
 })

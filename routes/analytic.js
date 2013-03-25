@@ -47,8 +47,8 @@ module.exports = function (app) {
         var unit = model.offset.unit,
             millis = model.offset.amount * 86400000,
             offset = unit == "d" ? millis : (unit == "m" ? millis * 30 : millis * 365),
-            startDate = model.date != "" ? model.date : -1,
-            endDate = (startDate != -1) ? (new Date(startDate)).getTime() + offset : new Date().getTime(),
+            startDate = model.date != "" ? new Date(model.date).valueOf() : -1,
+            endDate = (startDate != -1) ? startDate + offset : new Date().getTime(),
 
             categories = model.categories,
 
@@ -61,7 +61,7 @@ module.exports = function (app) {
                 groupBy = { y: "$dyear", m: "$dmonth", d: "$dday" };
                 match = {
                         $match: {
-                            date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+                            //date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                         }
                      };
                 break;
@@ -69,7 +69,7 @@ module.exports = function (app) {
                 groupBy = { y: "$dyear", m: "$dmonth" };
                 match = {
                     $match: {
-                        date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+                        //date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                     }
                 };
                 break;
@@ -77,7 +77,7 @@ module.exports = function (app) {
                 groupBy = { y: "$dyear" };
                 match = {
                     $match: {
-                        date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+                        date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                     }
                 };
                 break;
@@ -85,7 +85,7 @@ module.exports = function (app) {
                 groupBy = "$categories";
                 match = {
                     $match: {
-                        date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+                        date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                         //categories: categories,
                     }
                 };

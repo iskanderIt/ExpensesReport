@@ -1,0 +1,11 @@
+path.existsSync is now called `fs.existsSync`.
+[object Object]
+    at module.exports (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\routes\global.js:17:15)
+    at callbacks (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\router\index.js:272:11)
+    at param (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\router\index.js:246:11)
+    at pass (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\router\index.js:253:5)
+    at Router._dispatch (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\router\index.js:280:5)
+    at Object.middleware [as handle] (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\lib\router\index.js:45:10)
+    at next (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\express\node_modules\connect\lib\http.js:204:15)
+    at exports.send (C:\Data\Personal\Work\WebMatrix-folder\BilancioNode\node_modules\connect\lib\middleware\static.js:159:11)
+    at Object.oncomplete (fs.js:297:15)
