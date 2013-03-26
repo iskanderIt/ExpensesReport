@@ -10,6 +10,7 @@ html
 		// include default stylesheets and any view stylesheets
 		// link(rel='stylesheet', href=base + '/stylesheets/style.css')
 		link(rel='stylesheet', href=base + '/stylesheets/bootstrap.min.css')
+		link(rel='stylesheet', href=base + '/stylesheets/bootstrap-responsive.min.css')
 
 		// include default scripts and any view scripts
 		script(src=base + '/javascripts/jquery-1.7.min.js')
@@ -28,28 +29,34 @@ html
 		header
 			div(class="navbar")
 				div(class="navbar-inner")
-					a(class="brand", href="/") Balance
-					ul(class="nav")
-						li(class="")
-							a(href="/") Home
-						li(class="dropdown")
-							a(id="dropConsole", href="#", role="button", class="dropdown-toggle", data-toggle="dropdown") Console
-							ul(class="dropdown-menu", role="menu", aria-labelledby="dropConsole")
-								li(role="presentation")
-									a(role="menuitem", href="/operation/get") Add
-								li(role="presentation")
-									a(role="menuitem", href="/analytic/query") Query
-								li(role="presentation")
-									a(role="menuitem", href="/operation/list") List
-						li(class="dropdown")
-							a(id="dropReport", href="#", role="button", class="dropdown-toggle", data-toggle="dropdown") Report
-							ul(class="dropdown-menu", role="menu", aria-labelledby="dropReport")
-								li(role="presentation")
-									a(role="menuitem", href="/report/annual") Annual
-								li(role="presentation")
-									a(role="menuitem", href="/report/montly") Montly
-								li(role="presentation")
-									a(role="menuitem", href="/report/aggregate") Aggregate
+					div(class="container")
+						a(class="btn btn-navbar", data-toggle="collapse", data-target=".nav-collapse")
+							span(class="icon-bar")
+							span(class="icon-bar")
+							span(class="icon-bar")
+						a(class="brand", href="/") Balance
+						div(class="nav-collapse collapse")
+							ul(class="nav")
+								li(class="")
+									a(href="/") Home
+								li(class="dropdown")
+									a(id="dropConsole", href="#", role="button", class="dropdown-toggle", data-toggle="dropdown") Console
+									ul(class="dropdown-menu", role="menu", aria-labelledby="dropConsole")
+										li(role="presentation")
+											a(role="menuitem", href="/operation/get") Add
+										li(role="presentation")
+											a(role="menuitem", href="/analytic/query") Query
+										li(role="presentation")
+											a(role="menuitem", href="/operation/list") List
+								li(class="dropdown")
+									a(id="dropReport", href="#", role="button", class="dropdown-toggle", data-toggle="dropdown") Report
+									ul(class="dropdown-menu", role="menu", aria-labelledby="dropReport")
+										li(role="presentation")
+											a(role="menuitem", href="/report/annual") Annual
+										li(role="presentation")
+											a(role="menuitem", href="/report/montly") Montly
+										li(role="presentation")
+											a(role="menuitem", href="/report/aggregate") Aggregate
 
 		#body!=body
 		footer

@@ -38,6 +38,7 @@ var usersById = {},
     nextUserId = 0,
     usersByFacebookId = {},
     usersByTwitId = {},
+    usersByGoogleId = {};
     usersByLogin = {
         'user@example.com': addUser({ email: 'user@example.com', password: 'azure'})
     };
@@ -48,6 +49,28 @@ everyauth.
 	callback(null, usersById[id]);
     });
 
+/**
+* GOOGLE AUTHENTICATION
+*/
+
+everyauth.google
+  .appId(nconf.get("google").clientId)
+  .appSecret(nconf.get("google").clientSecret)
+  .scope('https://www.googleapis.com/auth/userinfo.profile')
+  .handleAuthCallbackError(function (req, res) {
+      // If a user denies your app, Google will redirect the user to
+      // /auth/google/callback?error=access_denied
+      // This configurable route handler defines how you want to respond to
+      // that.
+      // If you do not configure this, everyauth renders a default fallback
+      // view notifying the user that their authentication failed and why.
+  })
+  .findOrCreateUser(function (sess, accessToken, extra, googleUser) {
+      googleUser.refreshToken = extra.refresh_token;
+      googleUser.expiresIn = extra.expires_in;
+      return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = addUser('google', googleUser));
+  })
+  .redirectPath('/');
 
 /**
 * FACEBOOK AUTHENTICATION
@@ -93,7 +116,7 @@ everyauth.
 * USERNAME & PASSWORD AUTHENTICATION
 * -------------------------------------------------------------------------------------------------
 * this section provides basic in-memory username and password authentication
-**/
+
 
 everyauth
   .password
@@ -161,7 +184,7 @@ everyauth
     })
     .loginSuccessRedirect('/')
     .registerSuccessRedirect('/');
-
+**/
 // add a user to the in memory store of users.  If you were looking to use a persistent store, this
 // would be the place to start
 function addUser (source, sourceUser) {
