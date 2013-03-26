@@ -13,7 +13,7 @@ var express = require('express')
   , Recaptcha = require('recaptcha').Recaptcha
   //, mongolian = require('mongolian')
   , mongoose = require('mongoose')
-  ;
+;
 
 
 /**
@@ -22,7 +22,7 @@ var express = require('express')
 * load configuration settings from ENV, then settings.json.  Contains keys for OAuth logins. See 
 * settings.example.json.  
 **/
-nconf.env().file({file: 'settings.json'});
+nconf.env().file({ file: 'settings.json' });
 
 
 /**
@@ -39,15 +39,15 @@ var usersById = {},
     usersByFacebookId = {},
     usersByTwitId = {},
     usersByGoogleId = {};
-    usersByLogin = {
-        'user@example.com': addUser({ email: 'user@example.com', password: 'azure'})
-    };
+usersByLogin = {
+    'user@example.com': addUser({ email: 'user@example.com', password: 'azure' })
+};
 
-everyauth.
-    everymodule.
-    findUserById(function (id, callback) {
-	callback(null, usersById[id]);
-    });
+//everyauth.
+//    everymodule.
+//    findUserById(function (id, callback) {
+//	callback(null, usersById[id]);
+//    });
 
 /**
 * GOOGLE AUTHENTICATION
@@ -66,138 +66,50 @@ everyauth.google
       // view notifying the user that their authentication failed and why.
   })
   .findOrCreateUser(function (sess, accessToken, extra, googleUser) {
+
       googleUser.refreshToken = extra.refresh_token;
       googleUser.expiresIn = extra.expires_in;
-      return usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = addUser('google', googleUser));
-  })
-  .redirectPath('/');
 
-/**
-* FACEBOOK AUTHENTICATION
-* -------------------------------------------------------------------------------------------------
-* uncomment this section if you want to enable facebook authentication.  To use this, you will need
-* to get a facebook application Id and Secret, and add those to settings.json.  See:
-* http://developers.facebook.com/
-**/
+      //console.log("Loggin data [sess] ", sess);
+      //console.log("Loggin data [accessToken]  ", accessToken);
+      //console.log("Loggin data [extra]  ", extra);
+      //console.log("Loggin data [googleUser]  ", googleUser);
 
-//everyauth.
-//    facebook.
-//    appId(nconf.get('facebook:applicationId')).
-//    appSecret(nconf.get('facebook:applicationSecret')).
-//    findOrCreateUser(
-//	function(session, accessToken, accessTokenExtra, fbUserMetadata){
-//	    return usersByFacebookId[fbUserMetadata.claimedIdentifier] || 
-//		(usersByFacebookId[fbUserMetadata.claimedIdentifier] = 
-//		 addUser('facebook', fbUserMetadata));
-//	}).
-//    redirectPath('/');
+      // only alessandro scipioni is allowed
+      everyauth.google.redirectPath('/logout');
+      var retUser = usersByGoogleId[googleUser.id] || (usersByGoogleId[googleUser.id] = addUser('google', googleUser));
+      if (googleUser.id == "102833435665900602206") {
+          everyauth.google.redirectPath('/account');
+      }
+      //console.log("Loggin data [User] ", retUser);
+      //console.log("Loggin data [Users] ", usersByGoogleId);
+      //console.log("Loggin data [googleUser edit] ", googleUser);
+      return retUser;
+  });
 
+everyauth.everymodule.findUserById(function (userId, callback) {
+    var user = usersByGoogleId["102833435665900602206"].google;
 
-/**
-* TWITTER AUTHENTICATION
-* -------------------------------------------------------------------------------------------------
-* uncomment this section if you want to enable twitter authentication.  To use this, you will need
-* to get a twitter key and secret, and add those to settings.json.  See:
-* https://dev.twitter.com/
-**/
+    //console.log("User Found: ", user);
+    
+    callback(null, user);
+    // User.findById(userId, callback);
+    // callback has the signature, function (err, user) {...}
+});
 
-//everyauth
-//  .twitter
-//    .consumerKey(nconf.get('twitter:consumerKey'))
-//    .consumerSecret(nconf.get('twitter:consumerSecret'))
-//    .findOrCreateUser( function (sess, accessToken, accessSecret, twitUser) {
-//      return usersByTwitId[twitUser.id] || (usersByTwitId[twitUser.id] = addUser('twitter', twitUser));
-//    })
-//    .redirectPath('/');
-
-
-
-/**
-* USERNAME & PASSWORD AUTHENTICATION
-* -------------------------------------------------------------------------------------------------
-* this section provides basic in-memory username and password authentication
-
-
-everyauth
-  .password
-    .loginWith('email')
-    .getLoginPath('/login')
-    .postLoginPath('/login')
-    .loginView('account/login')
-    .loginLocals(function(req, res, done) {
-        setTimeout(function() {
-            done(null, {
-                title: 'login.  '
-            });
-        }, 200);
-    })
-    .authenticate(function(login, password) {
-        var errors = [];
-        if(!login) errors.push('Missing login');
-        if(!password) errors.push('Missing password');
-        if(errors.length) return errors;
-        var user = usersByLogin[login];
-        if(!user) return ['Login failed'];
-        if(user.password !== password) return ['Login failed'];
-        return user;
-    })
-    .getRegisterPath('/register')
-    .postRegisterPath('/register')
-    .registerView('account/register')
-    .registerLocals(function(req, res, done) {
-        setTimeout(function() {
-            done(null, {
-                title: 'Register.  ',
-                recaptcha_form: (new Recaptcha(nconf.get('recaptcha:publicKey'), nconf.get('recaptcha:privateKey'))).toHTML()
-            });
-        }, 200);
-    })
-    .extractExtraRegistrationParams(function(req) {
-        return {
-            confirmPassword: req.body.confirmPassword,
-            data: {
-                remoteip: req.connection.remoteAddress,
-                challenge: req.body.recaptcha_challenge_field,
-                response: req.body.recaptcha_response_field
-            }
-        }
-    })
-    .validateRegistration(function(newUserAttrs, errors) {
-        var login = newUserAttrs.login;
-        var confirmPassword = newUserAttrs.confirmPassword;
-        if(!confirmPassword) errors.push('Missing password confirmation')
-        if(newUserAttrs.password != confirmPassword) errors.push('Passwords must match');
-        if(usersByLogin[login]) errors.push('Login already taken');
-
-        // validate the recaptcha 
-        var recaptcha = new Recaptcha(nconf.get('recaptcha:publicKey'), nconf.get('recaptcha:privateKey'), newUserAttrs.data);
-        recaptcha.verify(function(success, error_code) {
-            if(!success) {
-                errors.push('Invalid recaptcha - please try again');
-            }
-        });
-        return errors;
-    })
-    .registerUser(function(newUserAttrs) {
-        var login = newUserAttrs[this.loginKey()];
-        return usersByLogin[login] = addUser(newUserAttrs);
-    })
-    .loginSuccessRedirect('/')
-    .registerSuccessRedirect('/');
-**/
 // add a user to the in memory store of users.  If you were looking to use a persistent store, this
 // would be the place to start
-function addUser (source, sourceUser) {
-  var user;
-  if (arguments.length === 1) { 
-    user = sourceUser = source;
-    user.id = ++nextUserId;
-    return usersById[nextUserId] = user;
-  } else { // non-password-based
-    user = usersById[++nextUserId] = {id: nextUserId};
-    user[source] = sourceUser;
-  }
-  return user;
+function addUser(source, sourceUser) {
+    var user;
+    if (arguments.length === 1) {
+        user = sourceUser = source;
+        user.id = ++nextUserId;
+        return usersById[nextUserId] = user;
+    } else { // non-password-based
+        user = usersById[++nextUserId] = { id: nextUserId };
+        user[source] = sourceUser;
+    }
+    return user;
 }
 
 
@@ -229,7 +141,7 @@ app.configure(function () {
     app.use(express.methodOverride());
     app.use(require('./middleware/locals'));
     app.use(express.cookieParser());
-    app.use(express.session({ secret: 'azure zomg' }));
+    app.use(express.session({ secret: 'bilancio node' }));
     app.use(everyauth.middleware());
     app.use(express.compiler({ src: __dirname + '/public', enable: ['less'] }));
     app.use(connect.static(__dirname + '/public'));
@@ -245,8 +157,8 @@ app.configure(function () {
 * to show a custom 404 / 500 error using jade and the middleware errorHandler (see ./middleware/errorHandler.js)
 **/
 var errorOptions = { dumpExceptions: true, showStack: true }
-app.configure('development', function() { });
-app.configure('production', function() {
+app.configure('development', function () { });
+app.configure('production', function () {
     errorOptions = {};
 });
 app.use(require('./middleware/errorHandler')(errorOptions));
@@ -258,7 +170,7 @@ app.use(require('./middleware/errorHandler')(errorOptions));
 * -------------------------------------------------------------------------------------------------
 * include a route file for each major area of functionality in the site
 **/
-
+require('./routes/filter')(app);
 require('./routes/home')(app);
 require('./routes/report')(app);
 require('./routes/account')(app);
@@ -281,28 +193,28 @@ var buffer = [];
 var io = require('socket.io').listen(app);
 
 
-io.configure(function() {
+io.configure(function () {
     io.set("transports", ["xhr-polling"]);
     io.set("polling duration", 100);
 });
 
-io.sockets.on('connection', function(socket) {
+io.sockets.on('connection', function (socket) {
     socket.emit('messages', { buffer: buffer });
-    socket.on('setname', function(name) {
-        socket.set('name', name, function() {
+    socket.on('setname', function (name) {
+        socket.set('name', name, function () {
             socket.broadcast.emit('announcement', { announcement: name + ' connected' });
         });
     });
-    socket.on('message', function(message) {
-        socket.get('name', function(err, name) {
+    socket.on('message', function (message) {
+        socket.get('name', function (err, name) {
             var msg = { message: [name, message] };
             buffer.push(msg);
-            if(buffer.length > 15) buffer.shift();
+            if (buffer.length > 15) buffer.shift();
             socket.broadcast.emit('message', msg);
         })
     });
-    socket.on('disconnect', function() {
-        socket.get('name', function(err, name) {
+    socket.on('disconnect', function () {
+        socket.get('name', function (err, name) {
             socket.broadcast.emit('announcement', { announcement: name + ' disconnected' });
         })
     })

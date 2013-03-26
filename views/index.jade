@@ -2,4 +2,8 @@ div(class"hero-unit")
 	h1 Balance
 	p Controlla il tuo conto
 	p
-		a(class="btn btn-small btn-info") Guarda
+		a(class="btn btn-small btn-info", href="/login") Entra
+	- if(everyauth.loggedIn)
+		b Loggato
+		p= everyauth.google.user.name
+

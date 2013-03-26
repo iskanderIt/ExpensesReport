@@ -1,2 +1,4 @@
 // Jade
-p account!
+- if(everyauth.loggedIn)
+	p Loggato 
+	b= everyauth.google.user.name
