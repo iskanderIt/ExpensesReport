@@ -61,7 +61,7 @@ module.exports = function (app) {
                 groupBy = { y: "$dyear", m: "$dmonth", d: "$dday" };
                 match = {
                         $match: {
-                            //date: { $gte: new Date(startDate), $lt: new Date(endDate) },
+                            date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                         }
                      };
                 break;
@@ -69,7 +69,7 @@ module.exports = function (app) {
                 groupBy = { y: "$dyear", m: "$dmonth" };
                 match = {
                     $match: {
-                        //date: { $gte: new Date(startDate), $lt: new Date(endDate) },
+                        date: { $gte: new Date(startDate), $lt: new Date(endDate) },
                     }
                 };
                 break;
