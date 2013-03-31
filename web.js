@@ -1,3 +1,8 @@
+/**
+* BUILD TYPE
+* -------------------------------------------------------------------------------------------------
+**/
+var environment = "prod";
 
 /**
 * MODULE DEPENDENCIES
@@ -54,8 +59,8 @@ usersByLogin = {
 */
 
 everyauth.google
-  .appId(nconf.get("google").clientId)
-  .appSecret(nconf.get("google").clientSecret)
+  .appId(nconf.get("google-"+environment).clientId)
+  .appSecret(nconf.get("google-" + environment).clientSecret)
   .scope('https://www.googleapis.com/auth/userinfo.profile')
   .handleAuthCallbackError(function (req, res) {
       // If a user denies your app, Google will redirect the user to

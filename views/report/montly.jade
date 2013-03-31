@@ -156,6 +156,6 @@ section(id='query-form')
 
 			$(".item").click(function () {
 				var val = $(this).text();
-				$(".panel").css("display", "none");
-				$("#panel-" + val).css("display", "block");
+				$(".panel").addClass("hidden");
+				$("#panel-" + val).removeClass("hidden");
 			});

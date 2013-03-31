@@ -3,39 +3,68 @@ form(method="post", id="editor")
 	fieldset
 		label
 		| ID:
-		input(type="text", name="_id", value=op._id, readonly="readonly")
+		input(type="text", id="_id", name="_id", value=op._id, readonly="readonly")
 		label
 		| Data:
-		input(type="date", name="date", value=op.date.toISOString().substr(0,10))
+		input(type="date", id="date", name="date", value=op.date.toISOString().substr(0,10))
 		label
 		| Data Contabile:
-		input(type="date", name="dateTransition", value=op.dateTransition.toISOString().substr(0,10))
+		input(type="date", id="dateTransition", name="dateTransition", value=op.dateTransition.toISOString().substr(0,10))
 		label
 		| Descrizione:
-		input(type="textbox", name="description", value=op.description)
+		input(type="textbox", id="description", name="description", value=op.description)
 		label
 		| AmountIn:
-		input(type="textbox", name="amountIn", value=op.amountIn)
+		input(type="textbox", id="amountIn", name="amountIn", value=op.amountIn)
 		label
 		| AmountOut:
-		input(type="textbox", name="amountOut", value=op.amountOut)
+		input(type="textbox", id="amountOut", name="amountOut", value=op.amountOut)
+		label
+		| Tags:
+		select(id="categories",name="categories[]", multiple="multiple", style="width:100px")
+			each grp in tags
+				optgroup(label=grp.name)
+					if (grp.selected)
+						each tg in grp.items
+							option(value=tg, selected="selected")= tg
+					else
+						each tg in grp.items
+							option(value=tg)= tg
 
-		input(type="hidden", name="categories[]", value="test")
+
 		input(type="hidden", name="type", value=op.type)
+		br()
+		br()
 		p
 			input(type="button", class="button", value="save")
 			input(type="button", class="button", value="delete")
 
 		script(type="text/javascript")
 			$(function(){
+				$("select").multiselect();
+
 				$(".button").click(function(){
 					var action = '/operation/'+$(this).val();
+					var tags = [];
+					$("#categories").multiselect("getChecked").each(function(ix,el){
+						tags.push(el.value);
+					});
+					var newObj = {
+						_id : $("#_id").val(),
+						date : $("#date").val(),
+						dateTransition : $("#dateTransition").val(),
+						description : $("#description").val(),
+						amountIn : $("#amountIn").val(),
+						amountOut : $("#amountOut").val(),
+						categories : $.unique(tags),
+					};
 
 					$.post(
 						action,
-						$("#editor").serialize(),
+						newObj,
 						function(data, textStatus, jqXHR) {
-							//alert($("#editor").serialize());
+							if(textStatus == "success" && data['_id'])
+								$('#_id').val(data['_id']);
 						});
 				});
 			});

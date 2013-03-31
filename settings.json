@@ -1,7 +1,11 @@
 {
-    "google": {
+    "google-prod": {
         "clientId": "495392987954.apps.googleusercontent.com",
         "clientSecret": "saLRxaoKvpqlcA3OwvFTb44z"
+    },
+	"google-dev": {
+    "clientId": "495392987954-qmlhagf0blcl96e58412qakbraanjgrh.apps.googleusercontent.com",
+    "clientSecret": "RiRzGITauzhijI2fBNTTMFBE"
     },
     "twitter": {
         "consumerKey": "{ your twitter consumer key }",

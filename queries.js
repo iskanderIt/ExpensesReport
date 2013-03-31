@@ -89,3 +89,7 @@ db.operations.find().forEach(function (x) {
     x.id = null;
     db.operations.save(x);
 })
+db.operations.find().forEach(function (x) {
+    x.categories = x.categories.sort();
+    db.operations.save(x);
+})

@@ -29,6 +29,7 @@ module.exports = function (app) {
         tmp.date.setHours(12, 30, 0, 0);
         tmp.dateTransition = new Date(tmp.dateTransition);
         tmp.dateTransition.setHours(12, 30, 0, 0);
+        tmp.categories = tmp.categories != null ? tmp.categories.sort(): [];
         var obj = {};
 
         var id = tmp._id;
@@ -48,12 +49,12 @@ module.exports = function (app) {
         else
             Operation.findByIdAndUpdate(id, obj,
                 { upsert: true }, function (err) {
-                if (err) {
-                    console.error(err);
-                    res.json({ok:0, msg:"error update"});
-                }
-                res.json(obj);
-            });
+                    if (err) {
+                        console.error(err);
+                        res.json({ok:0, msg:"error update"});
+                    }
+                    res.json(obj);
+                });
     });
 
     app.post('/operation/delete', function (req, res) {
@@ -90,8 +91,26 @@ module.exports = function (app) {
                     description: "",
                     amountOut: 0,
                     amountIn: 0,
+                    categories: [],
                 };
-            res.render('operation/editor', { op: obj });
+
+            console.log("categories obj => ", obj.categories);
+
+            var opt = [{ $project: { categories: 1, _id: 0 } } , { $group: { _id: "$categories", } }];
+
+            Operation.aggregate(opt, function (err, data) {
+                var ret = [];
+                for (var i in data) {
+                    var n = data[i]['_id'].join(',');
+                    ret.push({
+                        name: n,
+                        items: data[i]['_id'],
+                        selected : n == obj.categories && obj.categories != null
+                    });
+                }
+                console.log("categories aggr => ", ret);
+                res.render('operation/editor', { op: obj, tags: ret.sort() });
+            });
         });
     });
 
@@ -99,6 +118,25 @@ module.exports = function (app) {
 
         Operation.find(true, function (err, data) {
             res.render('operation/list', { title: 'List', ops: data });
+        });
+    });
+
+    app.get('/operation/categories', function (req, res) {
+        var
+        project = { $project : {categories: 1, _id:0 } },
+        group = { $group: { _id: "$categories", } };
+
+        var opt = [project, group];
+
+        Operation.aggregate(opt, function (err, data) {
+
+            //res.json([startDate, endDate, offset]);
+            //res.json([project, match, group]);
+
+            if (!err)
+                res.json(data);
+            else
+                res.json(err);
         });
     });
 }
