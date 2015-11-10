@@ -3,3 +3,8 @@ server.js.debug
 iisnode
 aspnet_client
 web.config
+*.sln
+*.suo
+node_modules
+Procfile
+
